@@ -5,9 +5,13 @@ shinyOptions(cache = cachem::cache_mem(max_size = 500e6))
 library(shiny)
 library(bslib)
 library(dplyr)
+library(shinymanager)
+
 
 # User Interface Object
 ui <- page_navbar(
+  
+  # footer = tags$p(verbatimTextOutput("auth_output")),
   
   # App theme ----
   theme = bs_theme(version = 5, bootswatch = "minty"),
@@ -27,40 +31,43 @@ ui <- page_navbar(
     navset_card_tab(
       
       title = "",
+      
       # Tab de Datos
       nav_panel(
         title = "Datos",
+
         # Card de Botones
         card(
           max_height = 60,
           layout_column_wrap(
             width = 1/2, # Tres columnas
-            actionButton("btn1", "Cargar Datos", class = "btn-primary", disabled = F),
-            actionButton("btn3", "Transferir Datos", class = "btn-primary", disabled = T)
+            actionButton(inputId = "btn1", label = "Cargar Datos", class = "btn-primary", disabled = F),
+            actionButton(inputId = "btn3", label = "Transferir Datos", class = "btn-primary", disabled = T)
           )
         ),
         # Card de tabla
         card(
           full_screen = TRUE,
-          tableOutput("data_lab_1"),
+          tableOutput(outputId = "data_lab_1"),
         )
       ),
       # Tab de Resultados
       nav_panel(
         title = "Resultados",
+
         # Card de Botones
         card(
           max_height = 60,
           layout_column_wrap(
             width = 1/2, # Tres columnas
-            actionButton("btn2", "Cargar Resultados", class = "btn-primary", disabled = F),
-            actionButton("btn4", "Transferir Resultados", class = "btn-primary", disabled = T)
+            actionButton(inputId = "btn2", label = "Cargar Resultados", class = "btn-primary", disabled = F),
+            actionButton(inputId = "btn4", label = "Transferir Resultados", class = "btn-primary", disabled = T)
           )
         ),
         # Card de tabla
         card(
           full_screen = TRUE,
-          tableOutput("results_lab_1")
+          tableOutput(outputId = "results_lab_1")
         )
       )
     )
@@ -70,7 +77,27 @@ ui <- page_navbar(
   
 )
 
+# Wrap your UI with secure_app
+ui <- secure_app(ui = ui, enable_admin = T)
+
 server <- function(input, output, session) {
+  
+  # call the server part
+  # check_credentials returns a function to authenticate users
+  # res_auth <- secure_server(
+  #   check_credentials = check_credentials(credentials)
+  # )
+  res_auth <- secure_server(
+    check_credentials = check_credentials(
+      "db/database.sqlite",
+      # passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+      passphrase = Sys.getenv("sql_db_pass")
+    )
+  )
+  
+  # output$auth_output <- renderPrint({
+  #   reactiveValuesToList(res_auth)
+  # })
   
   
   # Botones de data 
