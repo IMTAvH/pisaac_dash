@@ -5,3 +5,4 @@
 .secrets
 .Renviron
 app_cache/
+db/
