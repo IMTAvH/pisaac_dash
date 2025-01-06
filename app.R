@@ -134,7 +134,7 @@ server <- function(input, output, session) {
 
       {
         setProgress(1, message = "Calculation in progress", detail = 'This may take a while...')
-        googlesheets4::sheet_append(ss = "https://docs.google.com/spreadsheets/d/1G92S2BquXfDpBHtarxn38e3N1Tev6tLdTruXZdSZM_M/edit#gid=2104432393", data = data_lab, sheet = "PISAAC_DATA_LABORATORIO")
+        googlesheets4::sheet_append(ss = "https://docs.google.com/spreadsheets/d/1G92S2BquXfDpBHtarxn38e3N1Tev6tLdTruXZdSZM_M/edit#gid=2104432393", data = data_lab_1, sheet = "PISAAC_DATA_LABORATORIO")
         setProgress(2, message = "Finished!", detail = "")
         Sys.sleep(1)
       }
