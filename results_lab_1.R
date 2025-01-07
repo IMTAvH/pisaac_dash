@@ -16,8 +16,7 @@ results_lab_1 <- reporte_lab %>%
   mutate(
     Proyecto = "PISAAC",
     # `Edad del participante` = round_2(x = `Edad del participante`),
-    Mail = "NO TIENE",
-    Sexo = NA_character_
+    Mail = "NO TIENE"
   ) %>% 
   select(
     Proyecto,
