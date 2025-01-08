@@ -2,7 +2,7 @@ library(tidyverse)
 library(lubridate)
 
 datos_2 <- REDCapR::redcap_report(redcap_uri = "https://redcap.upch.edu.pe/api/",
-                                  token = "0D53115172B94333E7EC10F5FAC63E48",  
+                                  token = Sys.getenv("token_pisaac_2"),  
                                   report_id = 767, raw_or_label = "label", guess_type = FALSE)$data
 
 data_lab_2 <- datos_2 %>% 

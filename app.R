@@ -138,11 +138,11 @@ ui <- page_navbar(
         # Card de tabla
         card(
           full_screen = TRUE,
-          tableOutput(outputId = "results_lab_1")
+          tableOutput(outputId = "ped_sb_lab_2")
         )
       ),
       
-      # Tab de Pediatria SB
+      # Tab de Xpert Pediatricos
       nav_panel(
         title = "Xpert Pediatricos",
         
@@ -158,7 +158,7 @@ ui <- page_navbar(
         # Card de tabla
         card(
           full_screen = TRUE,
-          tableOutput(outputId = "results_lab_1")
+          tableOutput(outputId = "xpert_ped_lab_2")
         )
       )
     )
@@ -472,7 +472,145 @@ server <- function(input, output, session) {
     
   })
   
- 
+  
+  # Botones de Pediatricos SB
+  observeEvent(input$btn9, {
+    withProgress(
+      min = 1,
+      max = 2,
+      # message = 'Calculation in progress',
+      # detail = 'This may take a while...',
+      
+      {
+        setProgress(1, message = "Calculation in progress", detail = 'This may take a while...')
+        googlesheets4::gs4_auth(cache = ".secrets", email = "renato.cava@upch.pe")
+        source(file = "ped_sb_lab_2.R")
+        setProgress(2, message = "Finished!", detail = "")
+        Sys.sleep(1)
+      }
+    )
+    
+    output$ped_sb_lab_2 <- DT::renderDataTable(
+      
+      ped_sb_lab_2,
+      
+      options = list(
+        paging = F,    ## paginate the output
+        pageLength = 10,  ## number of rows to output for each page
+        scrollX = T,   ## enable scrolling on X axis
+        scrollY = T,   ## enable scrolling on Y axis
+        autoWidth = TRUE, ## use smart column width handling
+        server = FALSE,   ## use client-side processing
+        dom = 't',
+        # buttons = c('csv', 'excel'),
+        columnDefs = list(
+          list(targets = '_all', className = 'dt-center')
+        )
+        
+      ),
+      # extensions = 'Buttons',
+      # selection = 'single', ## enable selection of a single row
+      # filter = 'bottom',              ## include column filters at the bottom
+      rownames = FALSE,                ## don't show row numbers/names
+      filter = "none"
+    )
+    
+    updateActionButton(session, "btn9", disabled = T)
+    
+    updateActionButton(session, "btn10", disabled = F)
+    
+  })
+  
+  observeEvent(input$btn10, {
+    withProgress(
+      min = 1,
+      max = 2,
+      # message = 'Calculation in progress',
+      # detail = 'This may take a while...',
+      
+      {
+        setProgress(1, message = "Calculation in progress", detail = 'This may take a while...')
+        googlesheets4::sheet_write(ss = "https://docs.google.com/spreadsheets/d/1UgJ7pjGM4ytfId2yfEtNMzxqNVURtJgryef54jtf2IE/edit#gid=0", data = ped_sb_lab_2, sheet = "Resultados_v2")
+        setProgress(2, message = "Finished!", detail = "")
+        Sys.sleep(1)
+      }
+    )
+    
+    updateActionButton(session, "btn10", disabled = T)
+    
+    updateActionButton(session, "btn9", disabled = F)
+    
+  })
+  
+  # Botones de Xpert Pediatricos
+  observeEvent(input$btn11, {
+    withProgress(
+      min = 1,
+      max = 2,
+      # message = 'Calculation in progress',
+      # detail = 'This may take a while...',
+      
+      {
+        setProgress(1, message = "Calculation in progress", detail = 'This may take a while...')
+        googlesheets4::gs4_auth(cache = ".secrets", email = "renato.cava@upch.pe")
+        source(file = "xpert_ped_lab_2.R")
+        setProgress(2, message = "Finished!", detail = "")
+        Sys.sleep(1)
+      }
+    )
+    
+    output$xpert_ped_lab_2 <- DT::renderDataTable(
+      
+      xpert_ped_lab_2,
+      
+      options = list(
+        paging = F,    ## paginate the output
+        pageLength = 10,  ## number of rows to output for each page
+        scrollX = T,   ## enable scrolling on X axis
+        scrollY = T,   ## enable scrolling on Y axis
+        autoWidth = TRUE, ## use smart column width handling
+        server = FALSE,   ## use client-side processing
+        dom = 't',
+        # buttons = c('csv', 'excel'),
+        columnDefs = list(
+          list(targets = '_all', className = 'dt-center')
+        )
+        
+      ),
+      # extensions = 'Buttons',
+      # selection = 'single', ## enable selection of a single row
+      # filter = 'bottom',              ## include column filters at the bottom
+      rownames = FALSE,                ## don't show row numbers/names
+      filter = "none"
+    )
+    
+    updateActionButton(session, "btn11", disabled = T)
+    
+    updateActionButton(session, "btn12", disabled = F)
+    
+  })
+  
+  observeEvent(input$btn12, {
+    withProgress(
+      min = 1,
+      max = 2,
+      # message = 'Calculation in progress',
+      # detail = 'This may take a while...',
+      
+      {
+        setProgress(1, message = "Calculation in progress", detail = 'This may take a while...')
+        googlesheets4::sheet_append(ss = "https://docs.google.com/spreadsheets/d/1SLBUKaig0w9B46pBMII1BqUu6Zi1MLnMogRVeYuE1OQ/edit?gid=994036930#gid=994036930", data = xpert_ped_lab_2, sheet = "Data")
+        setProgress(2, message = "Finished!", detail = "")
+        Sys.sleep(1)
+      }
+    )
+    
+    updateActionButton(session, "btn12", disabled = T)
+    
+    updateActionButton(session, "btn11", disabled = F)
+    
+  })
+  
 }
 
 shinyApp(ui, server)

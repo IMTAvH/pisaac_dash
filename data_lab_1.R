@@ -4,8 +4,6 @@ library(lubridate)
 # Lectura reporte lab de redcap
 reporte_lab <- REDCapR::redcap_report(redcap_uri = "https://redcap.upch.edu.pe/api/", token = Sys.getenv("token_pisaac_1"), report_id = 159L, raw_or_label = "label", raw_or_label_headers = "label")$data
 
-# Lectura de datos del sheet actuales
-data_lab_actual <- googlesheets4::read_sheet(ss = "https://docs.google.com/spreadsheets/d/1G92S2BquXfDpBHtarxn38e3N1Tev6tLdTruXZdSZM_M/edit#gid=2104432393", sheet = "PISAAC_DATA_LABORATORIO")
 
 # Data nueva filtrada (nuevos enrolados) para subir
 data_lab_1 <- reporte_lab %>% 
@@ -36,6 +34,6 @@ data_lab_1 <- reporte_lab %>%
     `Establecimiento de Salud`
   ) %>% 
   anti_join(
-    data_lab_actual,
+    googlesheets4::read_sheet(ss = "https://docs.google.com/spreadsheets/d/1G92S2BquXfDpBHtarxn38e3N1Tev6tLdTruXZdSZM_M/edit#gid=2104432393", sheet = "PISAAC_DATA_LABORATORIO"),
     by = "Código del participante:"
   )

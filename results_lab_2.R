@@ -2,15 +2,12 @@ library(tidyverse)
 library(lubridate)
 
 datos_2 <- REDCapR::redcap_report(redcap_uri = "https://redcap.upch.edu.pe/api/",
-                                  token = "0D53115172B94333E7EC10F5FAC63E48",  
+                                  token = Sys.getenv("token_pisaac_2"),  
                                   report_id = 767, raw_or_label = "label",guess_type = FALSE)$data
-
-# Lectura de datos actuales en sheet de resultados
-entrega_res_actual_2 <- googlesheets4::read_sheet(ss = "https://docs.google.com/spreadsheets/d/1G1-erEgp3brQaGydKSJcEzJMRhuFkNtheWSeDPPixrU/edit?gid=0#gid=0", sheet = "Resultados")
 
 
 # Entrega de resultados del lab
-results_lab_1 <- datos_2 %>% 
+results_lab_2 <- datos_2 %>% 
   filter(
     enrol_1 == "Si"
   ) %>%
@@ -60,6 +57,6 @@ results_lab_1 <- datos_2 %>%
   ) %>%
   arrange(Codigo) %>% 
   anti_join(
-    entrega_res_actual_2,
+    googlesheets4::read_sheet(ss = "https://docs.google.com/spreadsheets/d/1G1-erEgp3brQaGydKSJcEzJMRhuFkNtheWSeDPPixrU/edit?gid=0#gid=0", sheet = "Resultados"),
     by = "Codigo"
   )
